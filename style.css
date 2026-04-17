@@ -359,6 +359,121 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
 }
 
+/* Busserz Section */
+.busserz-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+}
+
+.busserz-section h2 {
+    text-align: center;
+    font-size: 3.5rem;
+    margin-bottom: 5rem;
+    color: #2c3e50;
+    position: relative;
+}
+
+.busserz-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.busserz-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 4rem;
+}
+
+.busserz-info h3 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.busserz-info p {
+    color: #666;
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.busserz-features {
+    list-style: none;
+    margin-bottom: 2.5rem;
+}
+
+.busserz-features li {
+    padding: 12px 0;
+    color: #555;
+    font-size: 1.05rem;
+    border-bottom: 1px solid #eee;
+}
+
+.busserz-features li:last-child {
+    border-bottom: none;
+}
+
+.busserz-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.busserz-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.busserz-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.busserz-graphic {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+}
+
+.delivery-icon {
+    font-size: 5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.food-icon {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 3rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
 /* Footer */
 .footer {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -407,12 +522,30 @@ h1, h2, h3, h4, h5, h6 {
 
     .menu h2,
     .about h2,
-    .contact h2 {
+    .contact h2,
+    .busserz-section h2 {
         font-size: 2.2rem;
     }
 
     .about-content {
         grid-template-columns: 1fr;
+    }
+
+    .busserz-content {
+        grid-template-columns: 1fr;
+    }
+
+    .busserz-graphic {
+        width: 200px;
+        height: 200px;
+    }
+
+    .delivery-icon {
+        font-size: 4rem;
+    }
+
+    .food-icon {
+        font-size: 2.5rem;
     }
 
     .footer .container {
