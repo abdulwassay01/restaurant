@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.net.*" %>
+<%@ page import="java.io.*" %>
 <%
     // Server-side variables
     String restaurantName = "busserzXcodehoppers";
@@ -8,6 +10,35 @@
     // Get user session info if logged in
     String userName = (String) session.getAttribute("userName");
     boolean isLoggedIn = userName != null;
+
+    String productsJson = "null";
+    String productsError = null;
+    try {
+        URL apiUrl = new URL("https://data.busserz.com/v2/products");
+        HttpURLConnection conn = (HttpURLConnection) apiUrl.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("x-bz-api-key", "IahObeaKZBCyn0gqo01wVLdrJMnUH0ye");
+        conn.setRequestProperty("x-bz-space-id", "PK00001001");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(15000);
+        conn.setReadTimeout(15000);
+
+        int status = conn.getResponseCode();
+        InputStream input = status >= 400 ? conn.getErrorStream() : conn.getInputStream();
+        if (input != null) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            productsJson = sb.toString();
+        }
+    } catch (Exception e) {
+        productsJson = "null";
+        productsError = e.getMessage();
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,39 +82,15 @@
     <!-- Menu Section -->
     <section id="menu" class="menu">
         <div class="container">
-            <h2>Our Menu</h2>
-            <div class="menu-grid">
-                <div class="menu-item">
-                    <h3>🥗 Fresh Salads</h3>
-                    <p>Crisp vegetables, seasonal ingredients, house-made dressings</p>
-                    <span class="price">$12 - $15</span>
-                </div>
-                <div class="menu-item">
-                    <h3>🍝 Pasta Dishes</h3>
-                    <p>Handmade pasta with rich sauces and premium ingredients</p>
-                    <span class="price">$16 - $22</span>
-                </div>
-                <div class="menu-item">
-                    <h3>🥩 Grilled Steaks</h3>
-                    <p>Premium cuts, perfectly grilled, served with sides</p>
-                    <span class="price">$24 - $35</span>
-                </div>
-                <div class="menu-item">
-                    <h3>🍤 Seafood</h3>
-                    <p>Fresh daily seafood, prepared with our signature style</p>
-                    <span class="price">$20 - $28</span>
-                </div>
-                <div class="menu-item">
-                    <h3>🍰 Desserts</h3>
-                    <p>Homemade desserts crafted by our pastry chef</p>
-                    <span class="price">$8 - $12</span>
-                </div>
-                <div class="menu-item">
-                    <h3>🍷 Beverages</h3>
-                    <p>Wine selection, cocktails, and non-alcoholic drinks</p>
-                    <span class="price">$5 - $18</span>
-                </div>
+            <h2>Busserz Menu</h2>
+            <div id="menu-status" class="menu-status">
+                <% if (productsError != null) { %>
+                    <div class="error-box">Unable to load Busserz products: <%= productsError %></div>
+                <% } else { %>
+                    <div class="loading">Loading products from Busserz...</div>
+                <% } %>
             </div>
+            <div class="menu-grid" id="product-list"></div>
         </div>
     </section>
 
@@ -165,6 +172,9 @@
         </div>
     </footer>
 
+    <script>
+        const BUSSERZ_PRODUCTS = <%= productsJson %>;
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

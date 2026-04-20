@@ -12,6 +12,46 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Render Busserz products fetched on the server
+function formatPrice(price) {
+    if (price === null || price === undefined) return '';
+    return `₨${price}`;
+}
+
+function renderBusserzProducts() {
+    const productList = document.getElementById('product-list');
+    const status = document.getElementById('menu-status');
+    if (!productList) return;
+
+    if (typeof BUSSERZ_PRODUCTS === 'object' && BUSSERZ_PRODUCTS && Array.isArray(BUSSERZ_PRODUCTS.items)) {
+        productList.innerHTML = '';
+        if (status) status.style.display = 'none';
+
+        BUSSERZ_PRODUCTS.items.forEach(product => {
+            const name = product.name?.public?.en || product.name?.system || 'Menu Item';
+            const description = product.description?.public?.short?.en || 'Delicious dish from Busserz';
+            const price = formatPrice(product.price);
+            const categories = Array.isArray(product.categories) ? product.categories.join(', ') : '';
+
+            const item = document.createElement('div');
+            item.className = 'menu-item';
+            item.innerHTML = `
+                <h3>${name}</h3>
+                <p>${description}</p>
+                ${categories ? `<p class="category">${categories}</p>` : ''}
+                <span class="price">${price}</span>
+            `;
+            productList.appendChild(item);
+        });
+    } else {
+        if (status) {
+            status.innerHTML = '<div class="error-box">Busserz menu is unavailable right now.</div>';
+        }
+    }
+}
+
+renderBusserzProducts();
+
 // Handle form submission
 const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
