@@ -12,22 +12,52 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Render Busserz products fetched on the server
-function formatPrice(price) {
-    if (price === null || price === undefined) return '';
-    return `₨${price}`;
+// Fetch and render Busserz products
+async function fetchBusserzProducts() {
+    const status = document.getElementById('menu-status');
+    const productList = document.getElementById('product-list');
+
+    try {
+        // Using a CORS proxy to bypass CORS restrictions
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const apiUrl = 'https://data.busserz.com/v2/products';
+
+        const response = await fetch(proxyUrl + apiUrl, {
+            method: 'GET',
+            headers: {
+                'x-bz-api-key': 'IahObeaKZBCyn0gqo01wVLdrJMnUH0ye',
+                'x-bz-space-id': 'PK00001001',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderBusserzProducts(data);
+
+    } catch (error) {
+        console.error('Error fetching Busserz products:', error);
+        if (status) {
+            status.innerHTML = '<div class="error-box">Unable to load Busserz menu. Please try again later.</div>';
+        }
+    }
 }
 
-function renderBusserzProducts() {
+// Render Busserz products
+function renderBusserzProducts(data) {
     const productList = document.getElementById('product-list');
     const status = document.getElementById('menu-status');
+
     if (!productList) return;
 
-    if (typeof BUSSERZ_PRODUCTS === 'object' && BUSSERZ_PRODUCTS && Array.isArray(BUSSERZ_PRODUCTS.items)) {
+    if (data && Array.isArray(data.items)) {
         productList.innerHTML = '';
         if (status) status.style.display = 'none';
 
-        BUSSERZ_PRODUCTS.items.forEach(product => {
+        data.items.forEach(product => {
             const name = product.name?.public?.en || product.name?.system || 'Menu Item';
             const description = product.description?.public?.short?.en || 'Delicious dish from Busserz';
             const price = formatPrice(product.price);
@@ -45,27 +75,36 @@ function renderBusserzProducts() {
         });
     } else {
         if (status) {
-            status.innerHTML = '<div class="error-box">Busserz menu is unavailable right now.</div>';
+            status.innerHTML = '<div class="error-box">No products available at the moment.</div>';
         }
     }
 }
 
-renderBusserzProducts();
+// Format price in Pakistani Rupees
+function formatPrice(price) {
+    if (price === null || price === undefined) return '';
+    return `₨${price}`;
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    fetchBusserzProducts();
+});
 
 // Handle form submission
 const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         // Get form values
         const name = this.querySelector('input[type="text"]').value;
         const email = this.querySelector('input[type="email"]').value;
         const message = this.querySelector('textarea').value;
-        
+
         // Show confirmation
         alert(`Thank you ${name}! We'll contact you at ${email} soon.`);
-        
+
         // Reset form
         this.reset();
     });
@@ -83,7 +122,7 @@ if (reserveBtn && reserveBtn.textContent === 'Reserve a Table') {
 window.addEventListener('scroll', () => {
     let current = '';
     const sections = document.querySelectorAll('section');
-    
+
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
@@ -91,7 +130,7 @@ window.addEventListener('scroll', () => {
             current = section.getAttribute('id');
         }
     });
-    
+
     document.querySelectorAll('.nav-menu a').forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href').slice(1) === current) {
