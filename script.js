@@ -1,3 +1,204 @@
+// Busserz products data (fetched from API)
+const BUSSERZ_PRODUCTS = {
+  "total": 8,
+  "items": [
+    {
+      "id": "adc22b64-57fd-4f04-bc63-d00b987b1f1f",
+      "name": {
+        "system": "Cheeseburger",
+        "public": {
+          "en": "Cheeseburger"
+        },
+        "short": {
+          "en": "Cheeseburger"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {
+            "en": "Great Cheeseburger just for you"
+          },
+          "full": {}
+        }
+      },
+      "price": 110,
+      "slug": "cheeseburger",
+      "categories": ["burgers"],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "ae1c4baa-d3e9-4ea1-8d81-15eafa4a4425",
+      "name": {
+        "system": "Cappuccino",
+        "public": {
+          "en": "Cappuccino"
+        },
+        "short": {
+          "en": "Cappuccino"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {
+            "en": ""
+          },
+          "full": {}
+        }
+      },
+      "price": 50,
+      "slug": "cappuccino",
+      "categories": ["drinks"],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "c0f53264-944f-48f2-9b83-6adcb282964c",
+      "name": {
+        "system": "Chai Latte",
+        "public": {
+          "en": "Chai Latte"
+        },
+        "short": {
+          "en": "Chai Latte"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {
+            "en": ""
+          },
+          "full": {}
+        }
+      },
+      "price": 45,
+      "slug": "chai-latte",
+      "categories": ["drinks"],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "4a25401e-cac4-4d52-950e-a00137fc4a38",
+      "name": {
+        "system": "Fresh Orange Juice",
+        "public": {
+          "en": "Fresh Orange Juice"
+        },
+        "short": {
+          "en": "Fresh Orange Juice"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {
+            "en": "Cold-pressed from ripe oranges."
+          },
+          "full": {}
+        }
+      },
+      "price": 25,
+      "slug": "orange-juice",
+      "categories": ["drinks"],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "9eab4ad3-c87b-4763-8a06-ee1b2ac4c585",
+      "name": {
+        "system": "Breakfast Sandwich",
+        "public": {
+          "en": "Breakfast Sandwich"
+        },
+        "short": {
+          "en": "Breakfast Sandwich"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {
+            "en": "Scrambled eggs, cheddar & bacon on toasted brioche."
+          },
+          "full": {}
+        }
+      },
+      "price": 85,
+      "slug": "breakfast-sandwich",
+      "categories": ["breakfast"],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "7f1ea706-b97d-446c-b379-bc2ffda1a51b",
+      "name": {
+        "system": "Grenola Bowl",
+        "public": {
+          "en": "Grenola Bowl"
+        },
+        "short": {
+          "en": "Grenola Bowl"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {
+            "en": "Crunchy granola with yogurt, berries & local honey."
+          },
+          "full": {}
+        }
+      },
+      "price": 56,
+      "slug": "grenola-bowl",
+      "categories": ["breakfast"],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "41b7be3a-906c-44e9-9f1d-c7fb387af2b8",
+      "name": {
+        "system": "Chicken Diss",
+        "public": {
+          "en": "Chicken Diss"
+        },
+        "short": {}
+      },
+      "description": {
+        "public": {
+          "short": {},
+          "full": {}
+        }
+      },
+      "price": 120,
+      "slug": "chicken-diss",
+      "categories": [],
+      "availability": "AVAILABLE",
+      "active": true
+    },
+    {
+      "id": "87439f35-a9af-4cb0-99d0-3f3067b8a068",
+      "name": {
+        "system": "Fresh Juice",
+        "public": {
+          "en": "Fresh juice"
+        },
+        "short": {
+          "en": "Fresh Juice"
+        }
+      },
+      "description": {
+        "public": {
+          "short": {},
+          "full": {}
+        }
+      },
+      "price": 50,
+      "slug": "fresh-juice",
+      "categories": [],
+      "availability": "AVAILABLE",
+      "active": true
+    }
+  ]
+};
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -12,52 +213,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Fetch and render Busserz products
-async function fetchBusserzProducts() {
-    const status = document.getElementById('menu-status');
-    const productList = document.getElementById('product-list');
-
-    try {
-        // Using a CORS proxy to bypass CORS restrictions
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const apiUrl = 'https://data.busserz.com/v2/products';
-
-        const response = await fetch(proxyUrl + apiUrl, {
-            method: 'GET',
-            headers: {
-                'x-bz-api-key': 'IahObeaKZBCyn0gqo01wVLdrJMnUH0ye',
-                'x-bz-space-id': 'PK00001001',
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        renderBusserzProducts(data);
-
-    } catch (error) {
-        console.error('Error fetching Busserz products:', error);
-        if (status) {
-            status.innerHTML = '<div class="error-box">Unable to load Busserz menu. Please try again later.</div>';
-        }
-    }
-}
-
-// Render Busserz products
-function renderBusserzProducts(data) {
+// Render Busserz products from static data
+function renderBusserzProducts() {
     const productList = document.getElementById('product-list');
     const status = document.getElementById('menu-status');
 
     if (!productList) return;
 
-    if (data && Array.isArray(data.items)) {
+    if (BUSSERZ_PRODUCTS && Array.isArray(BUSSERZ_PRODUCTS.items)) {
         productList.innerHTML = '';
         if (status) status.style.display = 'none';
 
-        data.items.forEach(product => {
+        BUSSERZ_PRODUCTS.items.forEach(product => {
             const name = product.name?.public?.en || product.name?.system || 'Menu Item';
             const description = product.description?.public?.short?.en || 'Delicious dish from Busserz';
             const price = formatPrice(product.price);
@@ -75,7 +242,7 @@ function renderBusserzProducts(data) {
         });
     } else {
         if (status) {
-            status.innerHTML = '<div class="error-box">No products available at the moment.</div>';
+            status.innerHTML = '<div class="error-box">Busserz menu is unavailable right now.</div>';
         }
     }
 }
@@ -88,7 +255,7 @@ function formatPrice(price) {
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    fetchBusserzProducts();
+    renderBusserzProducts();
 });
 
 // Handle form submission
